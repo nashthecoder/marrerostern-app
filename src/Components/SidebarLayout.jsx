@@ -7,11 +7,13 @@ import {
   FaTools,
   FaFileInvoiceDollar,
   FaComments,
+  FaWarehouse,
+  FaCalendarAlt,
+  FaChartLine,
 } from 'react-icons/fa';
-import { Link, useLocation } from 'react-router-dom';  // <-- important
+import { Link, useLocation } from 'react-router-dom';
 import '../assets/css/sidebar.css';
 import FooterSidebar from './FooterSidebar';
-
 
 import { useEffect } from 'react';
 import { auth, db } from '../../firebase';
@@ -84,12 +86,33 @@ function SidebarLayout({ children, setIsAuthenticated }) {
               </>
             ) : (
               <>
-                {role === 'admin' && (
-                  <li className={`mb-3 ${activePath === "/users" ? "active" : ""}`}>
-                    <Link to="/users" className="text-light text-decoration-none d-flex align-items-center">
-                      <FaUsers className="me-2" /> Gestions utilisateurs
-                    </Link>
-                  </li>
+                {(role === 'admin' || role === 'administrator') && (
+                  <>
+                    <li className={`mb-3 ${activePath === "/users" ? "active" : ""}`}>
+                      <Link to="/users" className="text-light text-decoration-none d-flex align-items-center">
+                        <FaUsers className="me-2" /> Gestion utilisateurs
+                      </Link>
+                    </li>
+                    <li className={`mb-3 ${activePath === "/stock" ? "active" : ""}`}>
+                      <Link to="/stock" className="text-light text-decoration-none d-flex align-items-center">
+                        <FaWarehouse className="me-2" /> Gestion des stocks
+                      </Link>
+                    </li>
+                  </>
+                )}
+                {(role === 'owner' || role === 'proprietaire') && (
+                  <>
+                    <li className={`mb-3 ${activePath === "/budget" ? "active" : ""}`}>
+                      <Link to="/budget" className="text-light text-decoration-none d-flex align-items-center">
+                        <FaChartLine className="me-2" /> Budget Overview
+                      </Link>
+                    </li>
+                    <li className={`mb-3 ${activePath === "/calendar" ? "active" : ""}`}>
+                      <Link to="/calendar" className="text-light text-decoration-none d-flex align-items-center">
+                        <FaCalendarAlt className="me-2" /> Calendrier réservations
+                      </Link>
+                    </li>
+                  </>
                 )}
                 <li className={`mb-3 ${activePath === "/reservations" ? "active" : ""}`}>
                   <Link to="/reservations" className="text-light text-decoration-none d-flex align-items-center">
@@ -98,17 +121,17 @@ function SidebarLayout({ children, setIsAuthenticated }) {
                 </li>
                 <li className={`mb-3 ${activePath === "/incidents" ? "active" : ""}`}>
                   <Link to="/incidents" className="text-light text-decoration-none d-flex align-items-center">
-                    <FaTools className="me-2" /> Suivi incidents et stocks
+                    <FaTools className="me-2" /> Suivi incidents
+                  </Link>
+                </li>
+                <li className={`mb-3 ${activePath === "/messages" ? "active" : ""}`}>
+                  <Link to="/messages" className="text-light text-decoration-none d-flex align-items-center">
+                    <FaComments className="me-2" /> Messagerie
                   </Link>
                 </li>
                 <li className={`mb-3 ${activePath === "/facturation" ? "active" : ""}`}>
                   <Link to="/facturation" className="text-light text-decoration-none d-flex align-items-center">
-                    <FaFileInvoiceDollar className="me-2" /> Module de facturation Centralisé
-                  </Link>
-                </li>
-                <li className={`mb-3 ${activePath === "/communications" ? "active" : ""}`}>
-                  <Link to="/communications" className="text-light text-decoration-none d-flex align-items-center">
-                    <FaComments className="me-2" /> Communications & Avis
+                    <FaFileInvoiceDollar className="me-2" /> Module de facturation
                   </Link>
                 </li>
               </>

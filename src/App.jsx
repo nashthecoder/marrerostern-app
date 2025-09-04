@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Dashboard from './Pages/Dashboard';
 import Login from './Pages/Login';
 import SidebarLayout from './Components/SidebarLayout';
@@ -12,6 +12,10 @@ import WelcomeBooklet from './Components/WelcomeBooklet';
 import ReviewForm from './Components/ReviewForm';
 
 import TravelerProfile from './Components/TravelerProfile';
+import StockManagement from './Components/StockManagement';
+import EnhancedMessaging from './Components/EnhancedMessaging';
+import BudgetDashboard from './Components/Owner/BudgetDashboard';
+import BookingCalendar from './Components/Owner/BookingCalendar';
 
 import { useEffect } from 'react';
 import { auth, db } from '../firebase';
@@ -92,6 +96,46 @@ function RoutedApp({ isAuthenticated, role, setIsAuthenticated }) {
           element={
             <SidebarLayout>
               <Incidents setIsAuthenticated={setIsAuthenticated} />
+            </SidebarLayout>
+          }
+        />
+      )}
+      {isAuthenticated && (
+        <Route
+          path="/stock"
+          element={
+            <SidebarLayout>
+              <StockManagement />
+            </SidebarLayout>
+          }
+        />
+      )}
+      {isAuthenticated && (
+        <Route
+          path="/messages"
+          element={
+            <SidebarLayout>
+              <EnhancedMessaging />
+            </SidebarLayout>
+          }
+        />
+      )}
+      {isAuthenticated && (
+        <Route
+          path="/budget"
+          element={
+            <SidebarLayout>
+              <BudgetDashboard />
+            </SidebarLayout>
+          }
+        />
+      )}
+      {isAuthenticated && (
+        <Route
+          path="/calendar"
+          element={
+            <SidebarLayout>
+              <BookingCalendar />
             </SidebarLayout>
           }
         />

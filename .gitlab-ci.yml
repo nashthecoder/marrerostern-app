@@ -1,0 +1,39 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  APP_NAME: marrerostern-admin
+  IMAGE_TAG: dev
+
+build:
+  stage: build
+  image: docker:24.0.5
+  services:
+    - docker:dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+  script:
+    - echo "$CI_JOB_TOKEN" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE:$IMAGE_TAG .
+    - docker push $CI_REGISTRY_IMAGE:$IMAGE_TAG
+
+deploy:
+  stage: deploy
+  image: kroniak/ssh-client
+  dependencies:
+    - build
+  before_script:
+    - mkdir -p ~/.ssh
+    - eval "$(ssh-agent -s)"
+    - ssh-add <(echo "${SSH_PRIVATE_KEY}" | base64 -d)
+    - ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" >> ~/.ssh/known_hosts
+  script:
+    - >
+      ssh -o StrictHostKeyChecking=yes -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "
+        echo \"${CI_JOB_TOKEN}\" | docker login -u \"${CI_REGISTRY_USER}\" --password-stdin \"${CI_REGISTRY}\" &&
+        docker pull \"${CI_REGISTRY_IMAGE}:${IMAGE_TAG}\" &&
+        docker stop \"${APP_NAME}\" || true &&
+        docker rm \"${APP_NAME}\" || true &&
+        docker run -d --name \"${APP_NAME}\" -p 3009:80 \"${CI_REGISTRY_IMAGE}:${IMAGE_TAG}\"
+      "

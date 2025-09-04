@@ -1,0 +1,21 @@
+@font-face {
+  font-family: 'Inter';
+  src: url('../font/Inter.woff2') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+.btn-cust-bg{
+    background-color: #192835 !important;
+    border-radius: 0 !important;
+}
+.custom-card{
+  border-radius: 0 !important;
+}
+.text-customs{
+  color: #000000 !important;
+}

@@ -1,0 +1,36 @@
+# Ignorer node_modules (sera réinstallé dans l'image)
+node_modules
+npm-debug.log
+yarn-error.log
+.pnpm-store
+.yarn
+.yarnrc.yml
+
+# Fichiers système ou d'éditeur
+.DS_Store
+.env.local
+.env.*.local
+.vscode
+
+# Tests et docs
+tests
+*.test.js
+*.spec.js
+coverage
+docs
+
+# Build local (au cas où)
+dist
+.vite
+
+# Configs spécifiques à ton IDE
+.vscode
+.idea
+
+# Git
+.git
+.gitignore
+
+# Docker Configs
+Dockerfile
+.dockerignore

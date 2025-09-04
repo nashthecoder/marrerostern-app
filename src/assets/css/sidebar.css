@@ -1,0 +1,59 @@
+.sidebar {
+  width: 240px !important;
+  min-height: 100vh;
+  transition: transform 0.3s ease;
+  z-index: 1000;
+  background-color: #224956 !important;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translateX(-100%);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-toggle {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1100;
+    background-color: #030303;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+  }
+}
+
+/* Desktop toggle hidden */
+@media (min-width: 768px) {
+  .sidebar-toggle {
+    display: none;
+  }
+}
+.sidebar ul li {
+    padding-left: 10px !important; /* Ajouté pour espacer l'icône du bord */
+}
+
+.sidebar ul li.active > a {
+  background-color: #4D7399;
+  border-radius: 4px;
+  padding-top: 3px !important;
+  padding-bottom: 3px !important;
+  padding-left: 3px !important; 
+  display: flex;
+  align-items: center;
+  gap: 4px; /* espace entre icône et texte */
+}
+
+.sidebar-logo {
+  max-width: 150px;
+  height: auto;
+  display: block;
+}

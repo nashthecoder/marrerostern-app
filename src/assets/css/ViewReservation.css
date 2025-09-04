@@ -1,0 +1,29 @@
+.full-width-calendar {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.reservation-title {
+  color: white;
+  text-align: center;
+  padding: 5px;
+  font-size: 12px;
+  border-radius: 5px; /* Pour donner un effet arrondi */
+}
+
+.yellow-bg {
+  background-color: #FFD633; /* Jaune pour "En attente" */
+}
+
+.green-bg {
+  background-color: #28a745; /* Vert pour "Réservation confirmée" */
+}
+
+.red-bg {
+  background-color: #dc3545; /* Rouge pour "Réservation annulée" */
+}
+
+/* signe reservation */
+.signeReservation p{
+  padding-top: 10px !important;
+}

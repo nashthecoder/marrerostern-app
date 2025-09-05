@@ -5,6 +5,8 @@ import RepartitionStatus from './RepartitionStatus';
 import AccesRapide from './AccesRapide';
 import AllUserSessions from '../AllUserSessions';
 import AuditLog from '../AuditLog';
+
+import AllProperties from '../AllProperties';
 import { Row, Col, Card } from 'react-bootstrap';
 
 function AdminDashboard() {
@@ -19,6 +21,9 @@ function AdminDashboard() {
       <AccesRapide />
       <Row className="mt-4">
         <Col xs={12}><AllUserSessions /></Col>
+      </Row>
+      <Row className="mt-4">
+        <Col xs={12}><AllProperties /></Col>
       </Row>
       <Row className="mt-4">
         <Col xs={12}>

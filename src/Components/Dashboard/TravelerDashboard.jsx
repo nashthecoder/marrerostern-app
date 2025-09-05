@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import AccesRapide from './AccesRapide';
 import MySessions from '../MySessions';
-import Messaging from '../Messaging';
+import TravelerMessagesTable from './TravelerMessagesTable';
 import IncidentReport from '../IncidentReport';
-import { Row, Col, Table, Spinner, Alert, Button } from 'react-bootstrap';
+import TravelerIncidentsTable from './TravelerIncidentsTable';
+import { Row, Col, Table, Spinner, Alert, Button, Container } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth, db } from '../../../firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
@@ -78,10 +79,18 @@ function TravelerDashboard() {
           )}
         </Col>
       </Row>
-      <Row className="mt-4">
-        <Col md={6}><Messaging role="traveler" /></Col>
-        <Col md={6}><IncidentReport role="traveler" /></Col>
-      </Row>
+      <Container fluid="md" className="px-0">
+        <Row className="mt-4">
+          <Col xs={12}>
+            <TravelerMessagesTable />
+          </Col>
+        </Row>
+        <Row className="mt-4">
+          <Col xs={12}>
+            <TravelerIncidentsTable />
+          </Col>
+        </Row>
+      </Container>
     </>
   );
 }

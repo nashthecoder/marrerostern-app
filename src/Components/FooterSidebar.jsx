@@ -8,8 +8,6 @@ function FooterSidebar() {
     "Mentions légales",
     "Tutoriel",
     "Carrières",
-    "Carrières",
-    "Carrières",
   ]
 
   return (

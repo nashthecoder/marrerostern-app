@@ -11,6 +11,8 @@ import { doc, getDoc } from 'firebase/firestore';
 import MySessions from '../Components/MySessions';
 import AllUserSessions from '../Components/AllUserSessions';
 
+import SidebarLayout from '../Components/SidebarLayout';
+// DEV: Pass role to SidebarLayout for menu updates
 function Dashboard({ setIsAuthenticated }) {
   const [role, setRole] = useState(null);
   const [roleLoading, setRoleLoading] = useState(true);
@@ -41,30 +43,35 @@ function Dashboard({ setIsAuthenticated }) {
     fetchRole();
   }, []);
 
+  // DEV: Role toggle for development only
+  const devRoles = ['admin', 'owner', 'provider', 'traveler'];
+  const handleDevRoleChange = (e) => {
+    setRole(e.target.value);
+    setRoleLoading(false);
+  };
+
   // Accept both 'traveler' and 'voyageur' for traveler dashboard
   const isTraveler = role === 'traveler' || role === 'voyageur';
 
   return (
     <>
-      <Container fluid>
-        <Header title="Tableau de bord" setIsAuthenticated={setIsAuthenticated} />
-        <div style={{fontSize:'0.9em', color:'#888', marginBottom:8}}>
-          <b>Debug:</b> role = <code>{role}</code>, user = <code>{userEmail}</code>
-        </div>
-        {roleLoading ? (
-          <div className="text-center my-4"><Spinner animation="border" /></div>
-        ) : role === 'admin' ? (
-          <AdminDashboard />
-        ) : role === 'owner' ? (
-          <OwnerDashboard />
-        ) : role === 'provider' ? (
-          <ProviderDashboard />
-        ) : isTraveler ? (
-          <TravelerDashboard />
-        ) : (
-          <div className="text-center my-4">Aucun rôle détecté.</div>
-        )}
-      </Container>
+      <Header title="Tableau de bord" setIsAuthenticated={setIsAuthenticated} />
+      <div style={{fontSize:'0.9em', color:'#888', marginBottom:8}}>
+        <b>Debug:</b> role = <code>{role}</code>, user = <code>{userEmail}</code>
+      </div>
+      {roleLoading ? (
+        <div className="text-center my-4"><Spinner animation="border" /></div>
+      ) : role === 'admin' ? (
+        <AdminDashboard />
+      ) : role === 'owner' ? (
+        <OwnerDashboard />
+      ) : role === 'provider' ? (
+        <ProviderDashboard />
+      ) : isTraveler ? (
+        <TravelerDashboard />
+      ) : (
+        <div className="text-center my-4">Aucun rôle détecté.</div>
+      )}
     </>
   );
 }

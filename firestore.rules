@@ -1,0 +1,92 @@
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Users collection
+    match /users/{userId} {
+      allow read, write: if request.auth != null && (request.auth.uid == userId || isAdmin());
+    }
+
+    // Missions collection
+    match /missions/{missionId} {
+      allow read, write: if isAdmin() || (request.auth != null && resource.data.assignedTo == request.auth.uid && isProvider());
+    }
+
+    // Reservations collection
+    match /reservations/{reservationId} {
+      allow read: if isAdmin()
+        || (request.auth != null && (
+          (resource.data.travelerId == request.auth.uid && isTraveler())
+          || (resource.data.client == request.auth.token.email && isTraveler())
+        ));
+      allow write: if isAdmin();
+    }
+
+    // Incidents collection
+    match /incidents/{incidentId} {
+      allow read: if request.auth != null && (
+        resource.data.reporterId == request.auth.uid ||
+        resource.data.reporter == request.auth.token.email ||
+        isAdmin()
+      );
+      allow create: if request.auth != null && request.resource.data.reporterId == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+
+    // Stock collection
+    match /stock/{stockId} {
+      allow read, write: if isAdmin() || (request.auth != null && resource.data.ownerId == request.auth.uid && isOwner());
+    }
+
+    // Invoices collection
+    match /invoices/{invoiceId} {
+      allow read, write: if isAdmin() || (request.auth != null && (
+        resource.data.ownerId == request.auth.uid && isOwner() ||
+        resource.data.serviceProviderId == request.auth.uid && isProvider()
+      ));
+    }
+
+    // Messages collection
+    match /messages/{messageId} {
+      allow read: if isAdmin()
+        || (request.auth != null && (
+          (resource.data.participants != null && (
+            request.auth.uid in resource.data.participants ||
+            request.auth.token.email in resource.data.participants
+          ))
+        ));
+      allow write: if isAdmin();
+    }
+    // Sessions subcollection
+    match /users/{userId}/devices/{deviceId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Documents collection
+    match /documents/{docId} {
+      allow read, write: if isAdmin() || (request.auth != null && resource.data.ownerId == request.auth.uid);
+    }
+
+    // Reviews collection
+    match /reviews/{reviewId} {
+      allow read, write: if isAdmin() || (request.auth != null && (
+        resource.data.travelerId == request.auth.uid && isTraveler() ||
+        resource.data.serviceProviderId == request.auth.uid && isProvider() ||
+        resource.data.ownerId == request.auth.uid && isOwner()
+      ));
+    }
+
+    // Helper functions for role checks
+    function isAdmin() {
+      return request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+    }
+    function isProvider() {
+      return request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "provider";
+    }
+    function isOwner() {
+      return request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "owner";
+    }
+    function isTraveler() {
+      return request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "traveler";
+    }
+  }
+}

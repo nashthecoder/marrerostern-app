@@ -1,5 +1,13 @@
+import { useLocation } from 'react-router-dom';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Dashboard from './Pages/Dashboard';
+import TravelerProfile from './Components/TravelerProfile';
+import AdminProfile from './Components/AdminProfile';
+import OwnerProfile from './Components/OwnerProfile';
+import ProviderProfile from './Components/ProviderProfile';
+import Messaging from './Components/Messaging';
+import IncidentReport from './Components/IncidentReport';
+import TravelerIncidentReportForm from './Components/Incidents/TravelerIncidentReportForm';
 import Login from './Pages/Login';
 import SidebarLayout from './Components/SidebarLayout';
 import { useState } from 'react';
@@ -10,8 +18,6 @@ import TravelerLogin from './Components/TravelerLogin';
 import CheckInForm from './Components/CheckInForm';
 import WelcomeBooklet from './Components/WelcomeBooklet';
 import ReviewForm from './Components/ReviewForm';
-
-import TravelerProfile from './Components/TravelerProfile';
 
 import { useEffect } from 'react';
 import { auth, db } from '../firebase';
@@ -27,81 +33,52 @@ function RoutedApp({ isAuthenticated, role, setIsAuthenticated }) {
   const query = useQuery();
   // Get reservationId from query param for traveler features
   const reservationId = query.get('reservationId');
-  const isTraveler = role === 'traveler' || role === 'voyageur';
-  return (
-    <Routes>
-      {/* Traveler Profile route */}
-      {(role === 'traveler' || role === 'voyageur') && (
-        <Route path="/profile" element={<TravelerProfile />} />
-      )}
-      <Route
-        path="/"
-        element={
-          isAuthenticated ? (
-            isTraveler ? (
-              <Navigate to="/welcome-booklet" />
-            ) : (
+    const isTraveler = role === 'traveler' || role === 'voyageur';
+    return (
+      <Routes>
+        <Route
+          path="/"
+          element={
+            isAuthenticated ? (
               <Navigate to="/dashboard" />
+            ) : (
+              <Navigate to="/connexion" />
             )
-          ) : (
-            <Navigate to="/connexion" />
-          )
-        }
-      />
-      {isTraveler && <Route path="/welcome-booklet" element={<WelcomeBooklet reservationId={reservationId || 'test-reservation-id'} />} />}
-      {isTraveler && <Route path="/checkin" element={<CheckInForm reservationId={reservationId || 'test-reservation-id'} />} />}
-      {isTraveler && <Route path="/review" element={<ReviewForm reservationId={reservationId || 'test-reservation-id'} />} />}
-      <Route
-        path="/connexion"
-        element={<Login setIsAuthenticated={setIsAuthenticated} />}
-      />
-      {/* Toutes les routes protégées affichées AVEC Sidebar */}
-      {isAuthenticated && (
-        <Route
-          path="/dashboard"
-          element={
-            <SidebarLayout>
-              <Dashboard setIsAuthenticated={setIsAuthenticated} />
-            </SidebarLayout>
           }
         />
-      )}
-      {isAuthenticated && (
-        <Route
-          path="/users"
-          element={
-            <SidebarLayout>
-              <Users setIsAuthenticated={setIsAuthenticated} />
-            </SidebarLayout>
-          }
-        />
-      )}
-      {isAuthenticated && (
-        <Route
-          path="/reservations"
-          element={
-            <SidebarLayout>
-              <Reservations setIsAuthenticated={setIsAuthenticated} />
-            </SidebarLayout>
-          }
-        />
-      )}
-      {isAuthenticated && (
-        <Route
-          path="/incidents"
-          element={
-            <SidebarLayout>
-              <Incidents setIsAuthenticated={setIsAuthenticated} />
-            </SidebarLayout>
-          }
-        />
-      )}
-      {/* Redirection sécurité pour toute tentative d'accès */}
-      {!isAuthenticated && (
-        <Route path="*" element={<Navigate to="/connexion" />} />
-      )}
-    </Routes>
-  );
+        {/* Traveler routes */}
+        {isTraveler && (
+          <>
+            <Route path="/dashboard" element={<SidebarLayout><Dashboard setIsAuthenticated={setIsAuthenticated} /></SidebarLayout>} />
+            <Route path="/profile" element={<SidebarLayout><TravelerProfile /></SidebarLayout>} />
+            <Route path="/communications" element={<SidebarLayout><Messaging role="traveler" /></SidebarLayout>} />
+            <Route path="/incidents" element={<SidebarLayout><TravelerIncidentReportForm /></SidebarLayout>} />
+            <Route path="/welcome-booklet" element={<WelcomeBooklet reservationId={reservationId || 'test-reservation-id'} />} />
+            <Route path="/checkin" element={<CheckInForm reservationId={reservationId || 'test-reservation-id'} />} />
+            <Route path="/review" element={<ReviewForm reservationId={reservationId || 'test-reservation-id'} />} />
+          </>
+        )}
+        {/* Other roles */}
+        {!isTraveler && (
+          <>
+            <Route path="/dashboard" element={<SidebarLayout><Dashboard setIsAuthenticated={setIsAuthenticated} /></SidebarLayout>} />
+            <Route path="/users" element={<SidebarLayout><Users setIsAuthenticated={setIsAuthenticated} /></SidebarLayout>} />
+            <Route path="/reservations" element={<SidebarLayout><Reservations setIsAuthenticated={setIsAuthenticated} /></SidebarLayout>} />
+            <Route path="/incidents" element={<SidebarLayout><IncidentReport role={role} /></SidebarLayout>} />
+            <Route path="/profile" element={<SidebarLayout>
+              {role === 'admin' && <AdminProfile />}
+              {role === 'owner' && <OwnerProfile />}
+              {role === 'provider' && <ProviderProfile />}
+            </SidebarLayout>} />
+          </>
+        )}
+        <Route path="/connexion" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+        {/* Redirection sécurité pour toute tentative d'accès */}
+        {!isAuthenticated && (
+          <Route path="*" element={<Navigate to="/connexion" />} />
+        )}
+      </Routes>
+    );
 }
 
 

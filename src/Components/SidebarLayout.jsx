@@ -15,17 +15,20 @@ import FooterSidebar from './FooterSidebar';
 
 import { useEffect } from 'react';
 import { auth, db } from '../../firebase';
+import { signOut } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 
 function SidebarLayout({ children, setIsAuthenticated }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [role, setRole] = useState(null);
+  const [email, setEmail] = useState("");
   const location = useLocation();
 
   useEffect(() => {
     const fetchRole = async () => {
       const currentUser = auth.currentUser;
       if (currentUser) {
+        setEmail(currentUser.email);
         try {
           const userDocRef = doc(db, 'users', currentUser.uid);
           const userSnap = await getDoc(userDocRef);
@@ -39,10 +42,12 @@ function SidebarLayout({ children, setIsAuthenticated }) {
         }
       } else {
         setRole(null);
+        setEmail("");
       }
     };
     fetchRole();
   }, []);
+
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const activePath = location.pathname;
@@ -57,7 +62,28 @@ function SidebarLayout({ children, setIsAuthenticated }) {
           <div className="mb-4">
             <img src="/images/logo.png" alt="Logo" className="sidebar-logo" />
           </div>
+          {/* User info */}
+          <div className="mb-3">
+            <div className="small text-light">{email}</div>
+            <div className="small text-secondary">{role}</div>
+          </div>
 
+
+            {email && (
+              <li className="mb-3 mt-4">
+                <button
+                  className="btn btn-outline-light w-100 d-flex align-items-center justify-content-center"
+                  onClick={async () => {
+                    await signOut(auth);
+                    setIsAuthenticated(false);
+                  }}
+                  style={{ fontWeight: 500 }}
+                >
+                  <span className="me-2">Se déconnecter</span>
+                  <i className="fas fa-sign-out-alt" />
+                </button>
+              </li>
+            )}
           <ul className="list-unstyled">
             <li className={`mb-3 ${activePath === "/dashboard" ? "active" : ""}`}>
               <Link to="/dashboard" className="text-light text-decoration-none d-flex align-items-center">

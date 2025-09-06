@@ -3,76 +3,63 @@ import OwnerDashboard from '../Components/Dashboard/OwnerDashboard';
 import ProviderDashboard from '../Components/Dashboard/ProviderDashboard';
 import TravelerDashboard from '../Components/Dashboard/TravelerDashboard';
 import Header from '../Components/Header';
-import { Container, Row, Col, Card, Spinner } from 'react-bootstrap';
-import AuditLog from '../Components/AuditLog';
+import { Spinner } from 'react-bootstrap';
+import { onAuthStateChanged } from 'firebase/auth';
 import { useEffect, useState } from 'react';
-import { auth, db } from '../../firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import MySessions from '../Components/MySessions';
-import AllUserSessions from '../Components/AllUserSessions';
+import { auth, db } from '../../firebase';
 
-import SidebarLayout from '../Components/SidebarLayout';
 // DEV: Pass role to SidebarLayout for menu updates
 function Dashboard({ setIsAuthenticated }) {
   const [role, setRole] = useState(null);
-  const [roleLoading, setRoleLoading] = useState(true);
-  const [userEmail, setUserEmail] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchRole = async () => {
-      const currentUser = auth.currentUser;
-      if (currentUser) {
-        setUserEmail(currentUser.email);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      console.log('Auth state changed:', user);
+      if (user) {
         try {
-          const userDocRef = doc(db, 'users', currentUser.uid);
+          const userDocRef = doc(db, 'users', user.uid);
           const userSnap = await getDoc(userDocRef);
           if (userSnap.exists()) {
+            console.log('User role fetched:', userSnap.data().role);
             setRole(userSnap.data().role);
           } else {
+            console.log('User document does not exist');
             setRole(null);
           }
         } catch (error) {
+          console.error('Error fetching role:', error);
           setRole(null);
         }
       } else {
+        console.log('User is not authenticated');
         setRole(null);
-        setUserEmail('');
+        setIsAuthenticated(false);
       }
-      setRoleLoading(false);
-    };
-    fetchRole();
-  }, []);
+      setLoading(false);
+    });
 
-  // DEV: Role toggle for development only
-  const devRoles = ['admin', 'owner', 'provider', 'traveler'];
-  const handleDevRoleChange = (e) => {
-    setRole(e.target.value);
-    setRoleLoading(false);
-  };
+    return () => unsubscribe();
+  }, [setIsAuthenticated]);
 
-  // Accept both 'traveler' and 'voyageur' for traveler dashboard
-  const isTraveler = role === 'traveler' || role === 'voyageur';
+  if (loading) {
+    return <Spinner animation="border" />;
+  }
+
+  if (!role) {
+    return <div>Access Denied</div>;
+  }
 
   return (
     <>
       <Header title="Tableau de bord" setIsAuthenticated={setIsAuthenticated} />
-      <div style={{fontSize:'0.9em', color:'#888', marginBottom:8}}>
-        <b>Debug:</b> role = <code>{role}</code>, user = <code>{userEmail}</code>
-      </div>
-      {roleLoading ? (
-        <div className="text-center my-4"><Spinner animation="border" /></div>
-      ) : role === 'admin' ? (
-        <AdminDashboard />
-      ) : role === 'owner' ? (
-        <OwnerDashboard />
-      ) : role === 'provider' ? (
-        <ProviderDashboard />
-      ) : isTraveler ? (
-        <TravelerDashboard />
-      ) : (
-        <div className="text-center my-4">Aucun rôle détecté.</div>
-      )}
+      {role === 'admin' && <AdminDashboard />}
+      {role === 'owner' && <OwnerDashboard />}
+      {role === 'provider' && <ProviderDashboard />}
+      {(role === 'traveler' || role === 'voyageur') && <TravelerDashboard />}
     </>
   );
 }
+
 export default Dashboard;

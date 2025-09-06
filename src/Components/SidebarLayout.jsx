@@ -37,7 +37,7 @@ function SidebarLayout({ children, setIsAuthenticated }) {
           } else {
             setRole(null);
           }
-        } catch (error) {
+        } catch {
           setRole(null);
         }
       } else {
@@ -137,6 +137,45 @@ function SidebarLayout({ children, setIsAuthenticated }) {
                     <FaComments className="me-2" /> Communications & Avis
                   </Link>
                 </li>
+                {role === 'owner' && (
+                  <>
+                    <li className={`mb-3 ${activePath === "/dashboard" ? "active" : ""}`}>
+                      <Link to="/dashboard" className="text-light text-decoration-none d-flex align-items-center">
+                        <FaTachometerAlt className="me-2" /> Tableau de bord
+                      </Link>
+                    </li>
+                    <li className={`mb-3 ${activePath === "/my-properties" ? "active" : ""}`}>
+                      <Link to="/my-properties" className="text-light text-decoration-none d-flex align-items-center">
+                        <FaClipboardList className="me-2" /> Mes propriétés
+                      </Link>
+                    </li>
+                    <li className={`mb-3 ${activePath === "/messaging" ? "active" : ""}`}>
+                      <Link to="/messaging" className="text-light text-decoration-none d-flex align-items-center">
+                        <FaComments className="me-2" /> Messagerie
+                      </Link>
+                    </li>
+                    <li className={`mb-3 ${activePath === "/incident-report" ? "active" : ""}`}>
+                      <Link to="/incident-report" className="text-light text-decoration-none d-flex align-items-center">
+                        <FaTools className="me-2" /> Signaler un incident
+                      </Link>
+                    </li>
+                    <li className={`mb-3 ${activePath === "/budget-overview" ? "active" : ""}`}>
+                      <Link to="/budget-overview" className="text-light text-decoration-none d-flex align-items-center">
+                        <FaFileInvoiceDollar className="me-2" /> Aperçu du budget
+                      </Link>
+                    </li>
+                    <li className={`mb-3 ${activePath === "/booking-calendar" ? "active" : ""}`}>
+                      <Link to="/booking-calendar" className="text-light text-decoration-none d-flex align-items-center">
+                        <FaClipboardList className="me-2" /> Calendrier des réservations
+                      </Link>
+                    </li>
+                    <li className={`mb-3 ${activePath === "/owned-properties" ? "active" : ""}`}>
+                      <Link to="/owned-properties" className="text-light text-decoration-none d-flex align-items-center">
+                        <FaClipboardList className="me-2" /> Propriétés possédées
+                      </Link>
+                    </li>
+                  </>
+                )}
               </>
             )}
           </ul>

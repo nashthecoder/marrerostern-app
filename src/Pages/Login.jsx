@@ -58,8 +58,10 @@ function Login({ setIsAuthenticated }) { // ✅ reçoit la prop
         const userData = userSnap.data();
         let userRole = userData.role?.toLowerCase().trim() || "voyageur";
         if (normalizedSelectedRole === "administrateur") normalizedSelectedRole = "admin";
+        console.log('Selected Role:', normalizedSelectedRole);
+        console.log('User Role from Firestore:', userRole);
         if (normalizedSelectedRole !== userRole) {
-          setError(`Access Denied: You selected the role \"${normalizedSelectedRole}\", but your actual role is \"${userRole}\".`);
+          setError(`Access Denied: You selected the role "${normalizedSelectedRole}", but your actual role is "${userRole}".`);
           setLoading(false);
           return;
         }

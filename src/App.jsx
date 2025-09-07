@@ -94,6 +94,7 @@ function RoutedApp({ isAuthenticated, role, setIsAuthenticated }) {
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [role, setRole] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -114,9 +115,15 @@ function App() {
         setIsAuthenticated(false);
         setRole(null);
       }
+      setLoading(false);
     });
     return () => unsubscribe();
   }, []);
+
+  if (loading) {
+    // You can replace this with a spinner or splash screen if you want
+    return null;
+  }
 
   return (
     <Router>

@@ -1,7 +1,8 @@
+import UnifiedUserActivityTable from '../Components/Users/UnifiedUserActivityTable';
+                    <div className="mt-4"><UnifiedUserActivityTable /></div>
 
 import Header from '../Components/Header';
 // import AllUserSessions from '../Components/AllUserSessions';
-import UnifiedUserActivityTable from '../Components/Users/UnifiedUserActivityTable';
 import AuditLog from '../Components/AuditLog';
 import { Tabs, Tab } from 'react-bootstrap';
 // import Roles from '../Components/Users/Roles';
@@ -71,7 +72,6 @@ function Users({ setIsAuthenticated }) {
                     </div>
                 </Tab>
                 <Tab eventKey="activity" title="User Activity">
-                    <div className="mt-4"><UnifiedUserActivityTable /></div>
                 </Tab>
                 <Tab eventKey="audit" title="Audit Logs">
                     <div className="mt-4"><AuditLog /></div>

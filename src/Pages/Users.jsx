@@ -1,6 +1,8 @@
 
 import Header from '../Components/Header';
-import AllUserSessions from '../Components/AllUserSessions';
+// import AllUserSessions from '../Components/AllUserSessions';
+import UnifiedUserActivityTable from '../Components/Users/UnifiedUserActivityTable';
+import AuditLog from '../Components/AuditLog';
 import { Tabs, Tab } from 'react-bootstrap';
 // import Roles from '../Components/Users/Roles';
 import ShowUsers from '../Components/Users/ShowUsers';
@@ -62,14 +64,17 @@ function Users({ setIsAuthenticated }) {
         <>
             <Header title="Gestion d'utilisateurs" setIsAuthenticated={setIsAuthenticated} />
             <Tabs defaultActiveKey="users" id="user-management-tabs" className="mb-4" justify>
-                <Tab eventKey="sessions" title="Sessions">
-                    <div className="mt-4"><AllUserSessions /></div>
-                </Tab>
                 <Tab eventKey="users" title="Listes">
                     <div className="mt-4">
                         <UserRoleFilter />
                         <ShowUsers roleFilter={roleFilter} />
                     </div>
+                </Tab>
+                <Tab eventKey="activity" title="User Activity">
+                    <div className="mt-4"><UnifiedUserActivityTable /></div>
+                </Tab>
+                <Tab eventKey="audit" title="Audit Logs">
+                    <div className="mt-4"><AuditLog /></div>
                 </Tab>
             </Tabs>
         </>

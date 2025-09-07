@@ -6,6 +6,7 @@ import AdminProfile from './Components/AdminProfile';
 import OwnerProfile from './Components/OwnerProfile';
 import ProviderProfile from './Components/ProviderProfile';
 import Messaging from './Components/Messaging';
+import Communications from './Pages/Communications';
 import IncidentReport from './Components/IncidentReport';
 import TravelerIncidentReportForm from './Components/Incidents/TravelerIncidentReportForm';
 import Login from './Pages/Login';
@@ -69,6 +70,7 @@ function RoutedApp({ isAuthenticated, role, setIsAuthenticated }) {
             <Route path="/users" element={<SidebarLayout><Users setIsAuthenticated={setIsAuthenticated} /></SidebarLayout>} />
             <Route path="/reservations" element={<SidebarLayout><Reservations setIsAuthenticated={setIsAuthenticated} /></SidebarLayout>} />
             <Route path="/incidents" element={<SidebarLayout><IncidentReport role={role} /></SidebarLayout>} />
+            <Route path="/communications" element={<SidebarLayout setIsAuthenticated={setIsAuthenticated}><Communications setIsAuthenticated={setIsAuthenticated} isAuthenticated={isAuthenticated} /></SidebarLayout>} />
             {/* <Route path="/user-management" element={<SidebarLayout><UserManagement /></SidebarLayout>} /> */}
             <Route path="/mission-management" element={<SidebarLayout><MissionManagement /></SidebarLayout>} />
             {/* <Route path="/incident-management" element={<SidebarLayout><IncidentManagement /></SidebarLayout>} /> */}

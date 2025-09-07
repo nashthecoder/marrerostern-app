@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { Form, Button, ButtonGroup, Container, Row, Col } from "react-bootstrap";
 import { auth } from "../../firebase";
 import { signInWithEmailAndPassword, PhoneAuthProvider, multiFactor } from "firebase/auth";
-import { doc, getDoc, collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase";
+import { trackLogin } from '../utils/autoTracker';
 import "../assets/css/Login.css";
 import { useNavigate } from "react-router-dom"; // ✅ ajout
 import TwoFactorSetup from '../Components/TwoFactorSetup';
@@ -38,7 +39,7 @@ function Login({ setIsAuthenticated }) { // ✅ reçoit la prop
       const userDocRef = doc(db, "users", user.uid);
       const userSnap = await getDoc(userDocRef);
 
-      // --- Device/session tracking ---
+      // --- Automated login tracking (audit + session) ---
       try {
         let ip = '';
         try {
@@ -46,11 +47,7 @@ function Login({ setIsAuthenticated }) { // ✅ reçoit la prop
           const data = await res.json();
           ip = data.ip;
         } catch (e) {}
-        await addDoc(collection(db, `users/${user.uid}/devices`), {
-          userAgent: navigator.userAgent,
-          ip,
-          timestamp: serverTimestamp(),
-        });
+        await trackLogin(user.uid, ip);
       } catch (e) {}
 
       let normalizedSelectedRole = selectedRole?.toLowerCase().trim();

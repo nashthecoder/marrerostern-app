@@ -3,7 +3,7 @@ import { Modal, Button, Form, Spinner, Alert } from 'react-bootstrap';
 import { db, auth, storage } from '../../../firebase'; // auth à exporter dans firebase.js
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { doc, updateDoc, getDoc } from 'firebase/firestore';
-import { logAuditEvent } from '../../utils/audit';
+import { autoTrack } from '../../utils/autoTracker';
 import MySessions from '../MySessions';
 
 function EditUser({ show, handleClose, userId, onUpdate }) {
@@ -82,7 +82,13 @@ function EditUser({ show, handleClose, userId, onUpdate }) {
         updateData.password = formData.password;
       }
       await updateDoc(userRef, updateData);
-      await logAuditEvent('update_user', 'users', { userId, updateData });
+      await autoTrack({
+        type: 'Audit Log',
+        action: 'update_user',
+        resource: 'users',
+        details: { userId, updateData },
+        userId
+      });
       onUpdate();
       handleClose();
     } catch (error) {

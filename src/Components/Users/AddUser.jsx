@@ -4,7 +4,7 @@ import { db, storage } from '../../../firebase';
 // ...existing code...
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
-import { logAuditEvent } from '../../utils/audit';
+import { autoTrack } from '../../utils/autoTracker';
 
 function AddUser({ show, handleClose, onUserAdded }) {
   const [formData, setFormData] = useState({
@@ -52,7 +52,13 @@ function AddUser({ show, handleClose, onUserAdded }) {
         createdAt: Timestamp.now(),
       };
       await addDoc(collection(db, 'users'), newUser);
-      await logAuditEvent('create_user', 'users', { email: newUser.email, role: newUser.role });
+      await autoTrack({
+        type: 'Audit Log',
+        action: 'create_user',
+        resource: 'users',
+        details: { email: newUser.email, role: newUser.role },
+        userId: uid
+      });
       onUserAdded();
       handleClose();
     } catch (err) {

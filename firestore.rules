@@ -60,15 +60,34 @@ service cloud.firestore {
             request.auth.token.email in resource.data.participants
           ))
         ));
-      allow create: if request.auth != null && request.resource.data.participants != null && (
-        request.auth.uid in request.resource.data.participants ||
-        request.auth.token.email in request.resource.data.participants
-      );
+      allow create: if request.auth != null &&
+        request.resource.data.recipient != null &&
+        canSendMessage(request.auth.uid, request.auth.token.email, request.resource.data.recipient);
+    }
+
+    // Helper to check if sender can message recipient
+    function canSendMessage(senderUid, senderEmail, recipientEmail) {
+      let sender = get(/databases/$(database)/documents/users/$(senderUid)).data;
+      let recipient = getUserByEmail(recipientEmail);
+      // Admin can message anyone
+      if (sender.role == 'admin') return true;
+      // Owner can message admin and travelers
+      if (sender.role == 'owner' && (recipient.role == 'admin' || recipient.role == 'traveler')) return true;
+      // Traveler can message owners
+      if (sender.role == 'traveler' && recipient.role == 'owner') return true;
+      // Provider can message admins
+      if (sender.role == 'provider' && recipient.role == 'admin') return true;
+      return false;
+    }
+
+    // Helper to get user by email (inefficient, but Firestore rules are limited)
+    function getUserByEmail(email) {
+      return get(/databases/$(database)/documents/users/$(email));
     }
 
     // Sessions subcollection
     match /users/{userId}/devices/{deviceId} {
-      allow read: if request.auth != null && request.auth.uid == userId;
+      allow read: if isAdmin() || (request.auth != null && request.auth.uid == userId);
     }
 
     // Documents collection
@@ -99,8 +118,8 @@ service cloud.firestore {
       return request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "traveler";
     }
 
-    // Audit logs collection
-    match /auditLogs/{logId} {
+    // Audit logs collection (underscore, for correct access)
+    match /audit_logs/{logId} {
       allow read: if true; // TEMP: allow all reads for dashboard aggregation
       allow write: if isAdmin();
     }

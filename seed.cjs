@@ -1,3 +1,38 @@
+// --- SEED AUDIT LOGS ---
+async function seedAuditLogs() {
+  const userDocs = await db.collection('users').get();
+  const actions = [
+    { action: 'login', resource: 'auth', details: 'Connexion réussie' },
+    { action: 'logout', resource: 'auth', details: 'Déconnexion' },
+    { action: 'create_user', resource: 'users', details: 'Création de compte' },
+    { action: 'update_user', resource: 'users', details: 'Mise à jour du profil' },
+    { action: 'delete_user', resource: 'users', details: 'Suppression de compte' },
+    { action: 'create_reservation', resource: 'reservations', details: 'Nouvelle réservation' },
+    { action: 'update_reservation', resource: 'reservations', details: 'Modification de réservation' },
+    { action: 'delete_reservation', resource: 'reservations', details: 'Annulation de réservation' },
+  ];
+  let i = 0;
+  for (const userDoc of userDocs.docs) {
+    const userId = userDoc.id;
+    const userEmail = userDoc.data().email;
+    // Each user gets 3-5 random audit logs
+    const numLogs = Math.floor(Math.random() * 3) + 3;
+    for (let j = 0; j < numLogs; j++) {
+      const a = actions[(i + j) % actions.length];
+      const fakeDate = new Date(Date.now() - (i * 86400000) - (j * 3600000)); // spread logs over days/hours
+      await db.collection('audit_logs').add({
+        userId,
+        type: 'Audit Log',
+        action: a.action,
+        resource: a.resource,
+        details: { info: a.details, email: userEmail },
+        timestamp: admin.firestore.Timestamp.fromDate(fakeDate),
+      });
+    }
+    i++;
+    console.log(`Seeded audit logs for: ${userEmail}`);
+  }
+}
 require('dotenv').config();
 const admin = require('firebase-admin');
 const serviceAccount = require(process.env.FIREBASE_ADMIN_KEY_PATH || './marrerosten-admin-firebase-adminsdk-fbsvc-bf0a78abe1.json');
@@ -212,7 +247,8 @@ async function seedProperties() {
         await seedMessages();
         await seedSessions();
         await seedReservations();
+        await seedAuditLogs();
         process.exit();
       }
 
-main();
+      main();

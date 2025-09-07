@@ -5,7 +5,6 @@ import RepartitionStatus from './RepartitionStatus';
 import AccesRapide from './AccesRapide';
 // import AllUserSessions from '../AllUserSessions';
 import AuditLog from '../AuditLog';
-import Messaging from '../Messaging';
 
 // import AllProperties from '../AllProperties';
 import { Row, Col, Card } from 'react-bootstrap';
@@ -22,17 +21,7 @@ function AdminDashboard() {
       <AccesRapide />
 
 
-      <Row className="mt-4">
-        <Col xs={12}>
-          <Card className="shadow-sm mb-4">
-            <Card.Body>
-              <Card.Title className="mb-3" style={{ color: '#234E5B' }}>Journal d'audit</Card.Title>
-              <div style={{overflowX:'auto'}}><AuditLog /></div>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-  <Messaging role="admin" />
+      {/* AuditLog removed from dashboard. Now available on /users page under its own tab. */}
   {/* TODO: Add user management, incident validation, task assignment, invoice generation, all reservations/incidents, stock monitoring, reviews, and messaging shortcuts */}
     </>
   );

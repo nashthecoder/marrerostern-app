@@ -7,7 +7,7 @@ import {
   Button, Pagination, Spinner
 } from 'react-bootstrap';
 import { collection, getDocs, updateDoc, deleteDoc, doc } from 'firebase/firestore';
-import { logAuditEvent } from '../../utils/audit';
+import { autoTrack } from '../../utils/autoTracker';
 
 function ShowUsers({ roleFilter }) {
   const [users, setUsers] = useState([]);
@@ -34,7 +34,13 @@ function ShowUsers({ roleFilter }) {
         ...doc.data(),
       }));
       setUsers(userList);
-      await logAuditEvent('toggle_user_status', 'users', { userId: user.id, newStatus });
+      await autoTrack({
+        type: 'Audit Log',
+        action: 'toggle_user_status',
+        resource: 'users',
+        details: { userId: user.id, newStatus },
+        userId: user.id
+      });
     } catch (error) {
       console.error('Erreur lors de la récupération des utilisateurs:', error);
     } finally {
@@ -63,7 +69,13 @@ function ShowUsers({ roleFilter }) {
       try {
         await deleteDoc(doc(db, 'users', user.id));
         setUsers(prevUsers => prevUsers.filter(u => u.id !== user.id));
-        await logAuditEvent('delete_user', 'users', { userId: user.id });
+        await autoTrack({
+          type: 'Audit Log',
+          action: 'delete_user',
+          resource: 'users',
+          details: { userId: user.id },
+          userId: user.id
+        });
       } catch (error) {
         console.error('Erreur lors de la suppression de l\'utilisateur:', error);
         alert('Erreur lors de la suppression de l\'utilisateur.');

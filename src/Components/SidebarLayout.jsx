@@ -59,31 +59,21 @@ function SidebarLayout({ children, setIsAuthenticated }) {
       <div className={`sidebar bg-dark text-white ${sidebarOpen ? "open" : ""}`} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <div className="p-3 flex-grow-1">
           {/* Logo */}
-          <div className="mb-4">
+
+          <div className="mb-2">
             <img src="/images/logo.png" alt="Logo" className="sidebar-logo" />
           </div>
-          {/* User info */}
-          <div className="mb-3">
-            <div className="small text-light">{email}</div>
-            <div className="small text-secondary">{role}</div>
-          </div>
+          {(email || role) && (
+            <div className="mb-4" style={{lineHeight:1.2, paddingTop: '1rem'}}>
+              <hr style={{ borderColor: '#f7f8f8ff', margin: '0 0 0.5rem 0' }} />
+              {email && <div className="small text-light">{email}</div>}
+              {role && <div className="small text-secondary">{role}</div>}
+            </div>
+          )}
 
 
-            {email && (
-              <li className="mb-3 mt-4">
-                <button
-                  className="btn btn-outline-light w-100 d-flex align-items-center justify-content-center"
-                  onClick={async () => {
-                    await signOut(auth);
-                    setIsAuthenticated(false);
-                  }}
-                  style={{ fontWeight: 500 }}
-                >
-                  <span className="me-2">Se déconnecter</span>
-                  <i className="fas fa-sign-out-alt" />
-                </button>
-              </li>
-            )}
+
+            {/* Logout button removed from sidebar; only appears in header */}
           <ul className="list-unstyled">
             <li className={`mb-3 ${activePath === "/dashboard" ? "active" : ""}`}>
               <Link to="/dashboard" className="text-light text-decoration-none d-flex align-items-center">

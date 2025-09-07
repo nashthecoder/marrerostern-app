@@ -9,7 +9,7 @@ import {
 import { collection, getDocs, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { logAuditEvent } from '../../utils/audit';
 
-function ShowUsers() {
+function ShowUsers({ roleFilter }) {
   const [users, setUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 5;
@@ -73,8 +73,9 @@ function ShowUsers() {
 
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
-  const totalPages = Math.ceil(users.length / usersPerPage);
+  const filteredUsers = roleFilter ? users.filter(u => u.role === roleFilter) : users;
+  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);

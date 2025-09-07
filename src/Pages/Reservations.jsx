@@ -6,6 +6,7 @@ import { Plus } from 'react-bootstrap-icons';
 import CreateReservation from '../Components/Reservations/CreateReservation';
 import ViewReservations from '../Components/Reservations/ViewReservations';
 import SigneReservation from '../Components/Reservations/SigneReservation';
+import AllProperties from '../Components/AllProperties';
 import MissionNoplanifier from '../Components/Reservations/MissionNoplanifier';
 import PrestataireDispo from '../Components/Reservations/PrestataireDispo';
 
@@ -43,12 +44,15 @@ function Reservations() {
         <SigneReservation />
         <Row>
           <Col md={6} xs={12}>
-           <MissionNoplanifier /> 
+            <MissionNoplanifier />
           </Col>
           <Col md={6} xs={12}>
             <PrestataireDispo />
           </Col>
         </Row>
+        <div className="mt-4">
+          <AllProperties />
+        </div>
       </div>
     </>
   );

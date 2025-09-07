@@ -11,24 +11,53 @@ const auth = admin.auth();
 
 // --- DATA ARRAYS ---
 const users = [
-  { email: 'naijeria@gmail.com', password: 'admin@1234', role: 'admin', prenom: 'Admin', nom: 'Nigeria', status: 'active' },
-  { email: 'nashprovides@gmail.com', password: 'provider@1234', role: 'provider', prenom: 'Nash', nom: 'Provides', status: 'active' },
-  { email: 'nashowns@gmail.com', password: 'owner@1234', role: 'owner', prenom: 'Nash', nom: 'Owns', status: 'active' },
-  { email: 'nashtravels@gmail.com', password: 'travelle4@1234', role: 'traveler', prenom: 'Nash', nom: 'Travels', status: 'active' }
+  // 1 admin
+  { email: 'admin1@example.com', password: 'Admin@1234', role: 'admin', prenom: 'Admin', nom: 'One', status: 'active' },
+
+  // 5 service providers
+  { email: 'provider1@example.com', password: 'Provider@1234', role: 'provider', prenom: 'Provider', nom: 'One', status: 'active' },
+  { email: 'provider2@example.com', password: 'Provider@1234', role: 'provider', prenom: 'Provider', nom: 'Two', status: 'active' },
+  { email: 'provider3@example.com', password: 'Provider@1234', role: 'provider', prenom: 'Provider', nom: 'Three', status: 'active' },
+  { email: 'provider4@example.com', password: 'Provider@1234', role: 'provider', prenom: 'Provider', nom: 'Four', status: 'active' },
+  { email: 'provider5@example.com', password: 'Provider@1234', role: 'provider', prenom: 'Provider', nom: 'Five', status: 'active' },
+
+  // 2 owners
+  { email: 'owner1@example.com', password: 'Owner@1234', role: 'owner', prenom: 'Owner', nom: 'One', status: 'active' },
+  { email: 'owner2@example.com', password: 'Owner@1234', role: 'owner', prenom: 'Owner', nom: 'Two', status: 'active' },
+
+  // 10 travelers
+  { email: 'traveler1@example.com', password: 'Traveler@1234', role: 'traveler', prenom: 'Traveler', nom: 'One', status: 'active' },
+  { email: 'traveler2@example.com', password: 'Traveler@1234', role: 'traveler', prenom: 'Traveler', nom: 'Two', status: 'active' },
+  { email: 'traveler3@example.com', password: 'Traveler@1234', role: 'traveler', prenom: 'Traveler', nom: 'Three', status: 'active' },
+  { email: 'traveler4@example.com', password: 'Traveler@1234', role: 'traveler', prenom: 'Traveler', nom: 'Four', status: 'active' },
+  { email: 'traveler5@example.com', password: 'Traveler@1234', role: 'traveler', prenom: 'Traveler', nom: 'Five', status: 'active' },
+  { email: 'traveler6@example.com', password: 'Traveler@1234', role: 'traveler', prenom: 'Traveler', nom: 'Six', status: 'active' },
+  { email: 'traveler7@example.com', password: 'Traveler@1234', role: 'traveler', prenom: 'Traveler', nom: 'Seven', status: 'active' },
+  { email: 'traveler8@example.com', password: 'Traveler@1234', role: 'traveler', prenom: 'Traveler', nom: 'Eight', status: 'active' },
+  { email: 'traveler9@example.com', password: 'Traveler@1234', role: 'traveler', prenom: 'Traveler', nom: 'Nine', status: 'active' },
+  { email: 'traveler10@example.com', password: 'Traveler@1234', role: 'traveler', prenom: 'Traveler', nom: 'Ten', status: 'active' },
 ];
 
 const properties = [
-  { name: 'Villa Azure', address: '123 Côte d’Azur, Nice, France', ownerEmail: 'nashowns@gmail.com', providerEmail: 'nashprovides@gmail.com' },
-  { name: 'Chalet Montagne', address: '456 Route des Alpes, Chamonix, France', ownerEmail: 'nashowns@gmail.com', providerEmail: 'nashprovides@gmail.com' },
-  { name: 'Appartement Parisien', address: '789 Rue de Rivoli, Paris, France', ownerEmail: 'nashowns@gmail.com', providerEmail: 'nashprovides@gmail.com' }
+  // Owner 1
+  { name: 'Azure Villa', address: '123 Côte d’Azur, Nice, France', ownerEmail: 'owner1@example.com', providerEmail: 'provider1@example.com' },
+  { name: 'Montagne Chalet', address: '456 Route des Alpes, Chamonix, France', ownerEmail: 'owner1@example.com', providerEmail: 'provider2@example.com' },
+  { name: 'Parisian Apartment', address: '789 Rue de Rivoli, Paris, France', ownerEmail: 'owner1@example.com', providerEmail: 'provider3@example.com' },
+  // Owner 2
+  { name: 'Bordeaux House', address: '321 Rue du Vin, Bordeaux, France', ownerEmail: 'owner2@example.com', providerEmail: 'provider4@example.com' },
+  { name: 'Lyon Loft', address: '654 Place Bellecour, Lyon, France', ownerEmail: 'owner2@example.com', providerEmail: 'provider5@example.com' },
+  { name: 'Marseille Studio', address: '987 Vieux-Port, Marseille, France', ownerEmail: 'owner2@example.com', providerEmail: 'provider1@example.com' },
 ];
 
 const incidents = [
-  { periodeStart: '2025-09-01', periodeEnd: '2025-09-02', logement: 'logement1', urgence: 'Haute', description: "Fuite d'eau dans la salle de bain.", reporter: 'nashtravels@gmail.com' },
-  { periodeStart: '2025-09-03', periodeEnd: '2025-09-03', logement: 'logement2', urgence: 'Moyenne', description: "Problème de chauffage.", reporter: 'nashtravels@gmail.com' },
-  { periodeStart: '2025-09-04', periodeEnd: '2025-09-04', logement: 'logement3', urgence: 'Basse', description: "Ampoule grillée dans la cuisine.", reporter: 'nashtravels@gmail.com' },
-  { periodeStart: '2025-09-05', periodeEnd: '2025-09-05', logement: 'logement1', urgence: 'Haute', description: "Porte d'entrée difficile à fermer.", reporter: 'nashtravels@gmail.com' },
-  { periodeStart: '2025-09-06', periodeEnd: '2025-09-06', logement: 'logement2', urgence: 'Moyenne', description: "Télévision ne fonctionne pas.", reporter: 'nashtravels@gmail.com' }
+  // À faire
+  { periodeStart: '2025-09-01', periodeEnd: '2025-09-02', logement: 'logement1', urgence: 'Haute', description: "Fuite d'eau dans la salle de bain.", reporter: 'nashtravels@gmail.com', status: 'À faire' },
+  { periodeStart: '2025-09-03', periodeEnd: '2025-09-03', logement: 'logement2', urgence: 'Moyenne', description: "Problème de chauffage.", reporter: 'nashtravels@gmail.com', status: 'À faire' },
+  // En cours
+  { periodeStart: '2025-09-04', periodeEnd: '2025-09-04', logement: 'logement3', urgence: 'Basse', description: "Ampoule grillée dans la cuisine.", reporter: 'nashtravels@gmail.com', status: 'En cours' },
+  { periodeStart: '2025-09-05', periodeEnd: '2025-09-05', logement: 'logement1', urgence: 'Haute', description: "Porte d'entrée difficile à fermer.", reporter: 'nashtravels@gmail.com', status: 'En cours' },
+  // Terminé
+  { periodeStart: '2025-09-06', periodeEnd: '2025-09-06', logement: 'logement2', urgence: 'Moyenne', description: "Télévision ne fonctionne pas.", reporter: 'nashtravels@gmail.com', status: 'Terminé' },
 ];
 
 const messages = [
@@ -77,33 +106,32 @@ async function seedUsers() {
   }
 }
 
-      async function seedProperties() {
-        let ownerUid = '', providerUid = '';
-        let ownerName = '', providerName = '';
-        try {
-          const ownerRecord = await auth.getUserByEmail('nashowns@gmail.com');
-          ownerUid = ownerRecord.uid;
-          ownerName = ownerRecord.displayName || 'Nash Owns';
-          const providerRecord = await auth.getUserByEmail('nashprovides@gmail.com');
-          providerUid = providerRecord.uid;
-          providerName = providerRecord.displayName || 'Nash Provides';
-        } catch (e) {
-          console.error('Could not find owner/provider UID:', e);
-          return;
-        }
-        for (const property of properties) {
-          await db.collection('properties').add({
-            name: property.name,
-            address: property.address,
-            ownerId: ownerUid,
-            ownerName,
-            providerId: providerUid,
-            providerName,
-            createdAt: admin.firestore.FieldValue.serverTimestamp(),
-          });
-          console.log(`Seeded property: ${property.name}`);
-        }
-      }
+async function seedProperties() {
+  for (const property of properties) {
+    let ownerUid = '', providerUid = '', ownerName = '', providerName = '';
+    try {
+      const ownerRecord = await auth.getUserByEmail(property.ownerEmail);
+      ownerUid = ownerRecord.uid;
+      ownerName = ownerRecord.displayName || property.ownerEmail;
+      const providerRecord = await auth.getUserByEmail(property.providerEmail);
+      providerUid = providerRecord.uid;
+      providerName = providerRecord.displayName || property.providerEmail;
+    } catch (e) {
+      console.error('Could not find owner/provider UID:', e);
+      continue;
+    }
+    await db.collection('properties').add({
+      name: property.name,
+      address: property.address,
+      ownerId: ownerUid,
+      ownerName,
+      providerId: providerUid,
+      providerName,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+    console.log(`Seeded property: ${property.name}`);
+  }
+}
 
       async function seedIncidents() {
         let travelerUid = '', travelerEmail = '';

@@ -1,6 +1,7 @@
 import React from 'react';
 import { FaUsers, FaClipboardCheck, FaTools } from 'react-icons/fa';
 import { Row, Col, Card } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 function AccesRapide() {
   const iconCircleStyle = {
@@ -26,44 +27,50 @@ function AccesRapide() {
     <Row className="g-4">
       {/* Gestion d'utilisateur */}
       <Col md={4} sm={12}>
-        <Card className="shadow-sm text-center">
-          <Card.Body className="d-flex align-items-center">
-            <div style={iconCircleStyle}>
-              <FaUsers />
-            </div>
-            <div>
-              <small style={labelStyle}>Gestion d'utilisateur</small>
-            </div>
-          </Card.Body>
-        </Card>
+        <Link to="/users" style={{ textDecoration: 'none' }}>
+          <Card className="shadow-sm text-center">
+            <Card.Body className="d-flex align-items-center">
+              <div style={iconCircleStyle}>
+                <FaUsers />
+              </div>
+              <div>
+                <small style={labelStyle}>Gestion d'utilisateur</small>
+              </div>
+            </Card.Body>
+          </Card>
+        </Link>
       </Col>
 
       {/* Gestion des missions */}
       <Col md={4} sm={12}>
-        <Card className="shadow-sm text-center">
-          <Card.Body className="d-flex align-items-center">
-            <div style={iconCircleStyle}>
-              <FaClipboardCheck />
-            </div>
-            <div>
-              <small style={labelStyle}>Gestion des missions</small>
-            </div>
-          </Card.Body>
-        </Card>
+        <Link to="/mission-management" style={{ textDecoration: 'none' }}>
+          <Card className="shadow-sm text-center">
+            <Card.Body className="d-flex align-items-center">
+              <div style={iconCircleStyle}>
+                <FaClipboardCheck />
+              </div>
+              <div>
+                <small style={labelStyle}>Gestion des missions</small>
+              </div>
+            </Card.Body>
+          </Card>
+        </Link>
       </Col>
 
       {/* Gestion des incidents */}
       <Col md={4} sm={12}>
-        <Card className="shadow-sm text-center">
-          <Card.Body className="d-flex align-items-center">
-            <div style={iconCircleStyle}>
-              <FaTools />
-            </div>
-            <div>
-              <small style={labelStyle}>Gestion des incidents</small>
-            </div>
-          </Card.Body>
-        </Card>
+        <Link to="/incidents" style={{ textDecoration: 'none' }}>
+          <Card className="shadow-sm text-center">
+            <Card.Body className="d-flex align-items-center">
+              <div style={iconCircleStyle}>
+                <FaTools />
+              </div>
+              <div>
+                <small style={labelStyle}>Gestion des incidents</small>
+              </div>
+            </Card.Body>
+          </Card>
+        </Link>
       </Col>
     </Row>
   );

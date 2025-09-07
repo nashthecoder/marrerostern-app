@@ -1,14 +1,18 @@
 
 import Header from '../Components/Header';
-import Roles from '../Components/Users/Roles';
+import AllUserSessions from '../Components/AllUserSessions';
+import { Tabs, Tab } from 'react-bootstrap';
+// import Roles from '../Components/Users/Roles';
 import ShowUsers from '../Components/Users/ShowUsers';
 import { useEffect, useState } from 'react';
 import { auth, db } from '../../firebase';
 import { doc, getDoc } from 'firebase/firestore';
 
+
 function Users({ setIsAuthenticated }) {
     const [role, setRole] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [roleFilter, setRoleFilter] = useState('');
 
     useEffect(() => {
         const fetchRole = async () => {
@@ -36,11 +40,38 @@ function Users({ setIsAuthenticated }) {
     if (loading) return <div className="text-center my-4">Chargement...</div>;
     if (role !== 'admin') return <div className="text-center my-4 text-danger">Accès refusé : réservé aux administrateurs.</div>;
 
+    const UserRoleFilter = () => (
+      <div className="mb-3" style={{ maxWidth: 300 }}>
+        <label htmlFor="roleFilter" className="form-label"><strong>Filtrer par rôle</strong></label>
+        <select
+          id="roleFilter"
+          className="form-select"
+          value={roleFilter}
+          onChange={e => setRoleFilter(e.target.value)}
+        >
+          <option value="">Tous</option>
+          <option value="admin">Administrateur</option>
+          <option value="provider">Prestataire</option>
+          <option value="owner">Propriétaire</option>
+          <option value="traveler">Voyageur</option>
+        </select>
+      </div>
+    );
+
     return (
         <>
             <Header title="Gestion d'utilisateurs" setIsAuthenticated={setIsAuthenticated} />
-            <Roles />
-            <ShowUsers />
+            <Tabs defaultActiveKey="users" id="user-management-tabs" className="mb-4" justify>
+                <Tab eventKey="sessions" title="Sessions">
+                    <div className="mt-4"><AllUserSessions /></div>
+                </Tab>
+                <Tab eventKey="users" title="Listes">
+                    <div className="mt-4">
+                        <UserRoleFilter />
+                        <ShowUsers roleFilter={roleFilter} />
+                    </div>
+                </Tab>
+            </Tabs>
         </>
     );
 }

@@ -11,7 +11,7 @@ function FooterSidebar() {
   ]
 
   return (
-    <div style={{ padding: '1rem', color: '#fff', fontSize: '12px', fontFamily: 'inter, sans-serif' }}>
+    <div style={{ padding: '1rem', color: '#fff', fontSize: '12px', fontFamily: 'inter, sans-serif', display: 'flex', flexDirection: 'column', minHeight: 180 }}>
       {/* Menu en grille 2 colonnes */}
       <div
         style={{
@@ -29,7 +29,7 @@ function FooterSidebar() {
       </div>
 
       {/* Section "Nous suivre" */}
-      <div>
+      <div style={{ marginBottom: '1rem' }}>
         <h5>Nous suivre :</h5>
         <div style={{ display: 'flex', gap: '15px', alignItems: 'center', fontSize: '1.25rem' }}>
             <FaLinkedin style={{ cursor: 'pointer', color: '#0A66C2' }} />

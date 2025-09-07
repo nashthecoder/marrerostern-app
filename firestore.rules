@@ -1,15 +1,18 @@
 service cloud.firestore {
   match /databases/{database}/documents {
 
+
     // Users collection
     match /users/{userId} {
-      allow read: if request.auth != null && (request.auth.uid == userId || isOwner());
+      allow read: if true; // TEMP: allow all reads for dashboard aggregation
       allow write: if request.auth != null && (request.auth.uid == userId || isAdmin());
     }
 
+
     // Missions collection
     match /missions/{missionId} {
-      allow read, write: if isAdmin() || (request.auth != null && resource.data.assignedTo == request.auth.uid && isProvider());
+      allow read: if true; // TEMP: allow all reads for dashboard aggregation
+      allow write: if isAdmin() || (request.auth != null && resource.data.assignedTo == request.auth.uid && isProvider());
     }
 
     // Reservations collection
@@ -22,13 +25,10 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+
     // Incidents collection
     match /incidents/{incidentId} {
-      allow read: if request.auth != null && (
-        resource.data.reporterId == request.auth.uid ||
-        resource.data.reporter == request.auth.token.email ||
-        isAdmin()
-      );
+      allow read: if true; // TEMP: allow all reads for dashboard aggregation
       allow create: if request.auth != null && request.resource.data.reporterId == request.auth.uid;
       allow update, delete: if request.auth != null && resource.data.reporterId == request.auth.uid && isOwner();
     }
@@ -97,6 +97,12 @@ service cloud.firestore {
     }
     function isTraveler() {
       return request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "traveler";
+    }
+
+    // Audit logs collection
+    match /auditLogs/{logId} {
+      allow read: if true; // TEMP: allow all reads for dashboard aggregation
+      allow write: if isAdmin();
     }
   }
 }

@@ -11,6 +11,7 @@ import TravelerIncidentReportForm from './Components/Incidents/TravelerIncidentR
 import Login from './Pages/Login';
 import SidebarLayout from './Components/SidebarLayout';
 import { useState } from 'react';
+
 import Users from './Pages/Users';
 import Reservations from './Pages/Reservations';
 import Incidents from './Pages/Incidents';
@@ -18,6 +19,9 @@ import TravelerLogin from './Components/TravelerLogin';
 import CheckInForm from './Components/CheckInForm';
 import WelcomeBooklet from './Components/WelcomeBooklet';
 import ReviewForm from './Components/ReviewForm';
+// import UserManagement from './Pages/UserManagement';
+import MissionManagement from './Pages/MissionManagement';
+// import IncidentManagement from './Pages/IncidentManagement';
 
 import { useEffect } from 'react';
 import { auth, db } from '../firebase';
@@ -65,6 +69,9 @@ function RoutedApp({ isAuthenticated, role, setIsAuthenticated }) {
             <Route path="/users" element={<SidebarLayout><Users setIsAuthenticated={setIsAuthenticated} /></SidebarLayout>} />
             <Route path="/reservations" element={<SidebarLayout><Reservations setIsAuthenticated={setIsAuthenticated} /></SidebarLayout>} />
             <Route path="/incidents" element={<SidebarLayout><IncidentReport role={role} /></SidebarLayout>} />
+            {/* <Route path="/user-management" element={<SidebarLayout><UserManagement /></SidebarLayout>} /> */}
+            <Route path="/mission-management" element={<SidebarLayout><MissionManagement /></SidebarLayout>} />
+            {/* <Route path="/incident-management" element={<SidebarLayout><IncidentManagement /></SidebarLayout>} /> */}
             <Route path="/profile" element={<SidebarLayout>
               {role === 'admin' && <AdminProfile />}
               {role === 'owner' && <OwnerProfile />}

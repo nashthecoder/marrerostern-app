@@ -54,12 +54,22 @@ function SidebarLayout({ children, setIsAuthenticated }) {
 
   const isTraveler = role === 'traveler' || role === 'voyageur';
   return (
-    <div className="d-flex">
+    <div style={{ position: 'relative' }}>
       {/* Sidebar */}
-      <div className={`sidebar bg-dark text-white ${sidebarOpen ? "open" : ""}`} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <div className={`sidebar bg-dark text-white${sidebarOpen ? " open" : ""}`} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', position: 'fixed' }}>
+        {/* Close button inside sidebar, top right */}
+        {sidebarOpen && (
+          <button
+            className="sidebar-close-btn"
+            onClick={() => setSidebarOpen(false)}
+            aria-label="Fermer le menu latéral"
+            style={{ position: 'absolute', top: 12, right: 12, zIndex: 1200, background: 'none', border: 'none', color: '#fff', fontSize: 22, cursor: 'pointer' }}
+          >
+            <FaChevronLeft />
+          </button>
+        )}
         <div className="p-3 flex-grow-1">
           {/* Logo */}
-
           <div className="mb-2">
             <img src="/images/logo.png" alt="Logo" className="sidebar-logo" />
           </div>
@@ -176,16 +186,20 @@ function SidebarLayout({ children, setIsAuthenticated }) {
         </div>
       </div>
 
-      {/* Toggle Button (mobile) */}
-      <button
-        className="sidebar-toggle d-md-none"
-        onClick={toggleSidebar}
-      >
-        {sidebarOpen ? <FaChevronLeft /> : <FaBars />}
-      </button>
+
+      {/* Open Button (always visible, all roles) */}
+      {!sidebarOpen && (
+        <button
+          className="sidebar-toggle"
+          onClick={toggleSidebar}
+          aria-label="Ouvrir le menu latéral"
+        >
+          <FaBars />
+        </button>
+      )}
 
       {/* Contenu principal */}
-      <div className="flex-grow-1 p-4 content-area">
+      <div className="flex-grow-1 p-4 content-area" style={{ marginLeft: sidebarOpen ? 240 : 0, transition: 'margin-left 0.3s' }}>
         {children}
       </div>
     </div>

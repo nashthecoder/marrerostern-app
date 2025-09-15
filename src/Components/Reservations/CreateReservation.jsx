@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { Form, Button, Container, Row, Col, Alert } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Form, Button, Container, Row, Col, Alert, Spinner } from 'react-bootstrap';
 import { db } from '../../../firebase';
-import { collection, addDoc, Timestamp } from 'firebase/firestore';
+import { collection, addDoc, getDocs, Timestamp } from 'firebase/firestore';
+
 
 function CreateReservation({ onSuccess, isAdmin }) {
   const [form, setForm] = useState({
@@ -12,11 +13,31 @@ function CreateReservation({ onSuccess, isAdmin }) {
     prestataire: '',
     tache: '',
     note: '',
-    status: 'En attente', // Par défaut, le statut est "En attente"
+    status: 'En attente',
   });
-
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
+  const [properties, setProperties] = useState([]);
+  const [providers, setProviders] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        // Fetch properties
+        const propSnap = await getDocs(collection(db, 'properties'));
+        setProperties(propSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        // Fetch providers
+        const userSnap = await getDocs(collection(db, 'users'));
+        setProviders(userSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter(u => u.role === 'provider'));
+      } catch (e) {
+        setError('Erreur lors du chargement des données: ' + e.message);
+      }
+      setLoading(false);
+    };
+    fetchData();
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -35,10 +56,14 @@ function CreateReservation({ onSuccess, isAdmin }) {
       // Ajouter les données à Firestore, en convertissant les dates en Timestamp
       const docRef = await addDoc(collection(db, 'reservations'), {
         ...form,
-        dateArrivee: Timestamp.fromDate(dateArrivee), // Conversion en Timestamp
-        dateDepart: Timestamp.fromDate(dateDepart),   // Conversion en Timestamp
+        dateArrivee: Timestamp.fromDate(dateArrivee),
+        dateDepart: Timestamp.fromDate(dateDepart),
         createdAt: Timestamp.now(),
       });
+
+      // Notification/task assignment logic placeholder
+      // TODO: Send notification to provider and create task if prestataire and tache are set
+      // Example: await addDoc(collection(db, 'tasks'), { providerId: form.prestataire, reservationId: docRef.id, tache: form.tache, ... })
 
       setSuccess(`Réservation créée avec ID : ${docRef.id}`);
       setForm({
@@ -49,10 +74,9 @@ function CreateReservation({ onSuccess, isAdmin }) {
         prestataire: '',
         tache: '',
         note: '',
-        status: 'En attente', // Reset du statut après la soumission
+        status: 'En attente',
       });
 
-      // Fermer la modale si succès et callback fourni
       if (onSuccess) onSuccess();
 
     } catch (err) {
@@ -64,21 +88,25 @@ function CreateReservation({ onSuccess, isAdmin }) {
     <Container className="mt-3">
       {success && <Alert variant="success">{success}</Alert>}
       {error && <Alert variant="danger">{error}</Alert>}
-
-      <Form onSubmit={handleSubmit}>
-        <Row>
-          <Col md={6}>
-            <Form.Group className="mb-3">
-              <Form.Label>Logements</Form.Label>
-              <Form.Control
-                type="text"
-                name="logements"
-                value={form.logements}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-          </Col>
+      {loading ? <Spinner animation="border" /> : (
+        <Form onSubmit={handleSubmit}>
+          <Row>
+            <Col md={6}>
+              <Form.Group className="mb-3">
+                <Form.Label>Logements</Form.Label>
+                <Form.Select
+                  name="logements"
+                  value={form.logements}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Sélectionner un logement</option>
+                  {properties.map((p) => (
+                    <option key={p.id} value={p.id}>{p.name || p.address || p.id}</option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+            </Col>
 
           <Col md={6}>
             <Form.Group className="mb-3">
@@ -126,12 +154,16 @@ function CreateReservation({ onSuccess, isAdmin }) {
           <Col md={6}>
             <Form.Group className="mb-3">
               <Form.Label>Assigné un prestataire ?</Form.Label>
-              <Form.Control
-                type="text"
+              <Form.Select
                 name="prestataire"
                 value={form.prestataire}
                 onChange={handleChange}
-              />
+              >
+                <option value="">Aucun</option>
+                {providers.map((u) => (
+                  <option key={u.id} value={u.id}>{u.prenom || ''} {u.nom || ''} ({u.email})</option>
+                ))}
+              </Form.Select>
             </Form.Group>
           </Col>
 
@@ -182,7 +214,8 @@ function CreateReservation({ onSuccess, isAdmin }) {
         >
           Enregistrer la réservation
         </Button>
-      </Form>
+        </Form>
+      )}
     </Container>
   );
 }

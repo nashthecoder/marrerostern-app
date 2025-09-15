@@ -41,7 +41,6 @@ function Reservations() {
       </Modal>
       <div className="container">
         <ViewReservations />
-        <SigneReservation />
         <Row>
           <Col md={6} xs={12}>
             <MissionNoplanifier />

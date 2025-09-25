@@ -1,21 +1,10 @@
-import React, { useState } from 'react';
-import { FaBars, FaChevronLeft } from 'react-icons/fa';
-import {
-  FaTachometerAlt,
-  FaUsers,
-  FaClipboardList,
-  FaTools,
-  FaFileInvoiceDollar,
-  FaComments,
-} from 'react-icons/fa';
-import { Link, useLocation } from 'react-router-dom';  // <-- important
+import React, { useState, useEffect } from 'react';
+import { FaChevronLeft } from 'react-icons/fa';
+import { Link, useLocation } from 'react-router-dom';
 import '../assets/css/sidebar.css';
 import FooterSidebar from './FooterSidebar';
-
-
-import { useEffect } from 'react';
+import Header from './Header';
 import { auth, db } from '../../firebase';
-import { signOut } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 
 function SidebarLayout({ children, setIsAuthenticated }) {
@@ -48,15 +37,41 @@ function SidebarLayout({ children, setIsAuthenticated }) {
     fetchRole();
   }, []);
 
-
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const activePath = location.pathname;
-
   const isTraveler = role === 'traveler' || role === 'voyageur';
+
   return (
     <div style={{ position: 'relative' }}>
+      {/* Sidebar open chevron (when sidebar is closed) */}
+      {!sidebarOpen && (
+        <button
+          className="sidebar-open-btn"
+          onClick={() => setSidebarOpen(true)}
+          aria-label="Ouvrir le menu latéral"
+          style={{
+            position: 'fixed',
+            top: 20,
+            left: 10,
+            zIndex: 1300,
+            background: '#20434e',
+            border: 'none',
+            color: '#fff',
+            fontSize: 22,
+            borderRadius: '8px',
+            padding: '6px 10px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <FaChevronLeft style={{ transform: 'rotate(180deg)' }} />
+        </button>
+      )}
       {/* Sidebar */}
-      <div className={`sidebar bg-dark text-white${sidebarOpen ? " open" : ""}`} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', position: 'fixed' }}>
+      <div className={`sidebar bg-dark text-white${sidebarOpen ? " open" : ""}`} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', position: 'fixed', top: 0, left: 0, zIndex: 1200 }}>
         {/* Close button inside sidebar, top right */}
         {sidebarOpen && (
           <button
@@ -187,23 +202,43 @@ function SidebarLayout({ children, setIsAuthenticated }) {
       </div>
 
 
-      {/* Open Button (always visible, all roles) */}
-      {!sidebarOpen && (
-        <button
-          className="sidebar-toggle"
-          onClick={toggleSidebar}
-          aria-label="Ouvrir le menu latéral"
-        >
-          <FaBars />
-        </button>
-      )}
+
 
       {/* Contenu principal */}
-      <div className="flex-grow-1 p-4 content-area" style={{ marginLeft: sidebarOpen ? 240 : 0, transition: 'margin-left 0.3s' }}>
+      <div
+        className="flex-grow-1 p-4 content-area"
+        style={{
+          marginLeft: sidebarOpen ? 240 : 0,
+          paddingLeft: sidebarOpen ? undefined : 20,
+          transition: 'margin-left 0.3s, padding-left 0.3s'
+        }}
+      >
         {children}
+
       </div>
     </div>
   );
 }
+
+// Helper to get page title from path
+function getPageTitle(path) {
+  switch (path) {
+    case '/dashboard':
+      return 'Tableau de bord';
+    case '/reservations':
+      return 'Réservations et missions';
+    case '/users':
+      return 'Gestions utilisateurs';
+    case '/incidents':
+      return 'Incidents';
+    case '/communications':
+      return 'Communications & Avis';
+    case '/profile':
+      return 'Mon profil';
+    default:
+      return 'Marrero Stern';
+  }
+}
+
 
 export default SidebarLayout;

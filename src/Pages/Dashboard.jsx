@@ -53,9 +53,8 @@ function Dashboard({ setIsAuthenticated }) {
 
   return (
     <>
-  <Header title="Tableau de bord" setIsAuthenticated={setIsAuthenticated} isAuthenticated={true} />
       {role === 'admin' && <AdminDashboard />}
-  {role === 'owner' && <OwnerDashboard role={role} />}
+      {role === 'owner' && <OwnerDashboard role={role} />}
       {role === 'provider' && <ProviderDashboard />}
       {(role === 'traveler' || role === 'voyageur') && <TravelerDashboard />}
     </>
